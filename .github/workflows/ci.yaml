@@ -1,0 +1,39 @@
+name: builds init container for deploying app dynamics  agent
+on:
+  workflow_dispatch:
+    inputs:
+      agent-version:
+        description: Java agent version
+        required: true
+        default: 23.10.0
+env:
+  IMAGE_TAGS: ${{ github.event.inputs.agent-version }}
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
+  
+jobs:
+  build:
+    name: build container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: redhat-actions/buildah-build@v2
+        with:
+          image: appd-java-agent-installer
+          tags: ${{ env.IMAGE_TAGS }}
+          containerFiles: |
+            ./Dockerfile
+      - name: push to registry
+        id: push-to-registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "appd-java-agent-installer"
+          tags: ${{ env.IMAGE_TAGS }}
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+          extra-args: |
+            --disable-content-trust
+    outputs:
+      digest: ${{ steps.push-to-registry.outputs.digest }}
