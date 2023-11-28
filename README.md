@@ -1,3 +1,3 @@
-# Automate deployment of app dynamics java agent into containerized java applications
+# Automate deployment of app dynamics agent into containerized applications
 
 
