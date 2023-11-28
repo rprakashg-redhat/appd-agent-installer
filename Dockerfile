@@ -4,7 +4,7 @@ RUN mkdir -p $HOME/appd
 
 WORKDIR $HOME/appd
 
-RUN microdnf install jq unzip
+RUN microdnf install jq unzip wget
 
 RUN wget https://raw.githubusercontent.com/Appdynamics/appdynamics-agent-downloader/master/get-agent.sh
 

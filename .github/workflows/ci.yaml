@@ -1,17 +1,14 @@
 name: builds init container for deploying app dynamics  agent
 on:
-  workflow_dispatch:
-    inputs:
-      agent-version:
-        description: Java agent version
-        required: true
-        default: 23.10.0
+  push:
+    branches:
+      - main
 env:
-  IMAGE_TAGS: ${{ github.event.inputs.agent-version }}
+  IMAGE_TAGS: "latest"
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   REGISTRY_USER: ${{ github.actor }}
   REGISTRY_PASSWORD: ${{ github.token }}
-  
+    
 jobs:
   build:
     name: build container
